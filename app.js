@@ -3,7 +3,7 @@
 // ==========================================
 export async function fetchProducts() {
   try {
-    const res = await fetch('/api/products');
+    const res = await fetch('./products.json');
     if (!res.ok) throw new Error('Network response was not ok');
     return await res.json();
   } catch (err) {
