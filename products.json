@@ -1,0 +1,411 @@
+[
+  {
+    "id": 1,
+    "name": "Classic Cashmere Trench Coat",
+    "category": "men",
+    "type": "outerwear",
+    "price": 289,
+    "rating": 4.8,
+    "reviewsCount": 124,
+    "description": "A timeless silhouette engineered for modern sophistication. Crafted from a premium blend of organic virgin wool and pure Italian cashmere, offering supreme warmth, water resistance, and a buttery-soft hand feel.",
+    "details": [
+      "80% Virgin Wool, 20% Cashmere",
+      "Double-breasted button front closure",
+      "Adjustable belt at waist and cuffs",
+      "Internal chest pockets and outer welt pockets",
+      "Dry clean only"
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [
+      {
+        "name": "Camel",
+        "hex": "#C19A6B"
+      },
+      {
+        "name": "Midnight Black",
+        "hex": "#121212"
+      },
+      {
+        "name": "Slate Grey",
+        "hex": "#708090"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1544022613-e87ca75a784a?w=800&auto=format&fit=crop&q=80"
+    ],
+    "featured": true
+  },
+  {
+    "id": 2,
+    "name": "Satin Silk Wrap Dress",
+    "category": "women",
+    "type": "dresses",
+    "price": 195,
+    "rating": 4.9,
+    "reviewsCount": 98,
+    "description": "Effortless elegance for dinner dates or galas. Formed from lightweight, heavy-drape Mulberry silk with a soft satin finish. It contours beautifully at the waist and features elegant billowy sleeves.",
+    "details": [
+      "100% Mulberry Silk (22 Momme)",
+      "True wrap style with waist-tie adjustment",
+      "V-neckline with delicate gather details",
+      "Elasticated blouson cuffs",
+      "Hand wash cold or dry clean"
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L"
+    ],
+    "colors": [
+      {
+        "name": "Emerald Green",
+        "hex": "#0F52BA"
+      },
+      {
+        "name": "Champagne Gold",
+        "hex": "#F1E5AC"
+      },
+      {
+        "name": "Burgundy",
+        "hex": "#800020"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=800&auto=format&fit=crop&q=80"
+    ],
+    "featured": true
+  },
+  {
+    "id": 3,
+    "name": "Heritage Denim Trucker Jacket",
+    "category": "men",
+    "type": "outerwear",
+    "price": 135,
+    "rating": 4.7,
+    "reviewsCount": 215,
+    "description": "Rugged yet refined. Built from heavy-duty 14oz Japanese selvedge denim, designed to break in beautifully and develop a unique wash character over time. Finished with copper shank buttons.",
+    "details": [
+      "100% Selvedge Cotton Denim",
+      "Reinforced double-needle stitching",
+      "Buttoned chest pockets and welt side pockets",
+      "Adjustable button tabs at back waist",
+      "Machine wash cold inside out"
+    ],
+    "sizes": [
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colors": [
+      {
+        "name": "Indigo Wash",
+        "hex": "#2E5894"
+      },
+      {
+        "name": "Vintage Bleach",
+        "hex": "#A1C6EA"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1576995853123-5a10305d93c0?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1611312449412-6cefac5dc3e4?w=800&auto=format&fit=crop&q=80"
+    ],
+    "featured": false
+  },
+  {
+    "id": 4,
+    "name": "Fine Knit Merino Wool Sweater",
+    "category": "men",
+    "type": "tops",
+    "price": 110,
+    "rating": 4.6,
+    "reviewsCount": 86,
+    "description": "An essential layering piece for all seasons. Knit from extra-fine Australian Merino wool that naturally regulates temperature and breathes well. Tailored fit looks neat over collared shirts.",
+    "details": [
+      "100% Extra-fine Merino Wool",
+      "12-gauge knit construction",
+      "Ribbed crewneck, cuffs, and hem",
+      "Naturally odor-resistant and breathable",
+      "Dry clean or hand wash flat"
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [
+      {
+        "name": "Oatmeal Melange",
+        "hex": "#DFD5C6"
+      },
+      {
+        "name": "Charcoal",
+        "hex": "#36454F"
+      },
+      {
+        "name": "Forest Green",
+        "hex": "#228B22"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1614975058789-41316d0e2e9c?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1620799140408-edc6dcb6d633?w=800&auto=format&fit=crop&q=80"
+    ],
+    "featured": true
+  },
+  {
+    "id": 5,
+    "name": "Tailored Linen Trousers",
+    "category": "women",
+    "type": "bottoms",
+    "price": 125,
+    "rating": 4.5,
+    "reviewsCount": 74,
+    "description": "Relaxed sophistication for warm days. Fabricated from premium Belgian flax linen with a high-waisted, wide-leg cut. Deep pleats add structural interest while keeping you cool and comfortable.",
+    "details": [
+      "100% Premium Belgian Linen",
+      "High-rise with zip fly and clasp closure",
+      "Functional side slit pockets and rear welt pockets",
+      "Relaxed wide-leg silhouette",
+      "Iron hot or embrace natural linen wrinkles"
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L"
+    ],
+    "colors": [
+      {
+        "name": "Flax Ecru",
+        "hex": "#EADDC9"
+      },
+      {
+        "name": "Terracotta",
+        "hex": "#E2725B"
+      },
+      {
+        "name": "Pure White",
+        "hex": "#FFFFFF"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1509319117193-57bab727e09d?w=800&auto=format&fit=crop&q=80"
+    ],
+    "featured": false
+  },
+  {
+    "id": 6,
+    "name": "Urban Leather Chelsea Boots",
+    "category": "accessories",
+    "type": "shoes",
+    "price": 185,
+    "rating": 4.9,
+    "reviewsCount": 153,
+    "description": "Sleek ankle boots crafted in Spain from premium full-grain calfskin leather. Designed with flexible side goring and a pull tab for effortless entry. Finished with a durable leather welt and rubber insert sole.",
+    "details": [
+      "100% Calfskin Leather upper",
+      "Soft leather lining and cushioned footbed",
+      "Elastic side panels and rear pull loop",
+      "Stack leather heel with anti-slip rubber top lift",
+      "Handmade in Spain"
+    ],
+    "sizes": [
+      "7",
+      "8",
+      "9",
+      "10",
+      "11"
+    ],
+    "colors": [
+      {
+        "name": "Cognac Tan",
+        "hex": "#8B5A2B"
+      },
+      {
+        "name": "Obsidian Black",
+        "hex": "#0B0C10"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1608256246200-53e635b5b65f?w=800&auto=format&fit=crop&q=80"
+    ],
+    "featured": true
+  },
+  {
+    "id": 7,
+    "name": "Architectural Wool Blazer",
+    "category": "women",
+    "type": "outerwear",
+    "price": 220,
+    "rating": 4.8,
+    "reviewsCount": 110,
+    "description": "A power silhouette for the modern wardrobe. Designed with structured shoulders, a sharp peak lapel, and a tailored double-breasted closure. Lined with a silky modal blend for smooth layering.",
+    "details": [
+      "Shell: 90% Wool, 10% Nylon; Lining: 100% Modal",
+      "Peak lapels, double-breasted silhouette",
+      "Structured shoulder pads",
+      "Front flap pockets and breast pocket",
+      "Dry clean only"
+    ],
+    "sizes": [
+      "XS",
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "colors": [
+      {
+        "name": "Ivory White",
+        "hex": "#FFFFF0"
+      },
+      {
+        "name": "Midnight Black",
+        "hex": "#121212"
+      },
+      {
+        "name": "Pinstripe Navy",
+        "hex": "#1D2951"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1598808503742-dd34ab0ccf4b?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1548624313-0396c75e4b1a?w=800&auto=format&fit=crop&q=80"
+    ],
+    "featured": true
+  },
+  {
+    "id": 8,
+    "name": "Noolmade Signature Heavyweight Tee",
+    "category": "men",
+    "type": "tops",
+    "price": 45,
+    "rating": 4.4,
+    "reviewsCount": 310,
+    "description": "The ultimate tee, perfected. Cut in a relaxed, boxy street silhouette from 300GSM organic cotton jersey. Built to keep its shape wash after wash. Features a high crew collar and double-stitch hems.",
+    "details": [
+      "100% Organic Cotton (300 GSM)",
+      "Thick rib collar that won't stretch out",
+      "Preshrunk fabric to minimize shrinkage",
+      "Slightly dropped shoulders",
+      "Machine wash warm, tumble dry low"
+    ],
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "colors": [
+      {
+        "name": "Pure White",
+        "hex": "#FFFFFF"
+      },
+      {
+        "name": "Pitch Black",
+        "hex": "#000000"
+      },
+      {
+        "name": "Sage Green",
+        "hex": "#87A96B"
+      },
+      {
+        "name": "Clay Brown",
+        "hex": "#7C4F3E"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1583743814966-8936f5b7be1a?w=800&auto=format&fit=crop&q=80"
+    ],
+    "featured": false
+  },
+  {
+    "id": 9,
+    "name": "Acetate D-Frame Sunglasses",
+    "category": "accessories",
+    "type": "accessories",
+    "price": 65,
+    "rating": 4.6,
+    "reviewsCount": 52,
+    "description": "Timeless eyewear with a modern edge. Sculpted by hand from premium cellulose acetate with sturdy 5-barrel hinges. Polarized UV400 lenses offer total glare protection with high optical clarity.",
+    "details": [
+      "Handcrafted Cellulose Acetate frame",
+      "Scratch-resistant polarized lenses",
+      "100% UVA/UVB protection (UV 400)",
+      "Reinforced 5-barrel metal hinges",
+      "Includes protective leather pouch and cleaning cloth"
+    ],
+    "sizes": [
+      "One Size"
+    ],
+    "colors": [
+      {
+        "name": "Tortoise Shell",
+        "hex": "#4E3629"
+      },
+      {
+        "name": "Black Acetate",
+        "hex": "#000000"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?w=800&auto=format&fit=crop&q=80"
+    ],
+    "featured": false
+  },
+  {
+    "id": 10,
+    "name": "Ribbed Alpaca Beanie",
+    "category": "accessories",
+    "type": "accessories",
+    "price": 35,
+    "rating": 4.7,
+    "reviewsCount": 88,
+    "description": "An ultra-cozy knit hat designed to keep the cold at bay. Spun from sustainable alpaca fleece mixed with recycled nylon for extra durability and stretch. Double-folded brim allows for adjustable depth.",
+    "details": [
+      "70% Baby Alpaca, 30% Recycled Nylon",
+      "Classic 2x2 ribbed stitch pattern",
+      "Wide adjustable turn-up cuff",
+      "Incredibly lightweight, warm, and non-itchy",
+      "Dry clean or cold hand wash"
+    ],
+    "sizes": [
+      "One Size"
+    ],
+    "colors": [
+      {
+        "name": "Heather Grey",
+        "hex": "#8F8F8F"
+      },
+      {
+        "name": "Oatmeal",
+        "hex": "#EAE6DF"
+      },
+      {
+        "name": "Navy Blue",
+        "hex": "#0F1E36"
+      }
+    ],
+    "images": [
+      "https://images.unsplash.com/photo-1576871337632-b9aef4c17ab9?w=800&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1607606687073-45a9e60ee0b4?w=800&auto=format&fit=crop&q=80"
+    ],
+    "featured": false
+  }
+]

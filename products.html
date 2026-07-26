@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noolmade. | Shop Catalog</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Catalog Header banner -->
+  <div class="catalog-header">
+    <div class="container">
+      <h1 class="section-title" id="page-display-title">All Collections</h1>
+      <p style="color: var(--text-secondary); margin-top: 8px;">Filter through our luxury staples to discover your
+        perfect aesthetic fit.</p>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="catalog-layout">
+
+      <!-- Filters Sidebar Drawer -->
+      <aside class="filters-sidebar" id="catalog-sidebar">
+
+        <!-- Category Block -->
+        <div class="filter-block">
+          <h3 class="filter-title">Category</h3>
+          <div class="filter-options">
+            <label class="filter-label">
+              <input type="checkbox" name="category" value="men">
+              <span>Men</span>
+            </label>
+            <label class="filter-label">
+              <input type="checkbox" name="category" value="women">
+              <span>Women</span>
+            </label>
+            <label class="filter-label">
+              <input type="checkbox" name="category" value="accessories">
+              <span>Accessories</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Apparel Type Block -->
+        <div class="filter-block">
+          <h3 class="filter-title">Staple Type</h3>
+          <div class="filter-options">
+            <label class="filter-label">
+              <input type="checkbox" name="type" value="outerwear">
+              <span>Outerwear</span>
+            </label>
+            <label class="filter-label">
+              <input type="checkbox" name="type" value="dresses">
+              <span>Dresses</span>
+            </label>
+            <label class="filter-label">
+              <input type="checkbox" name="type" value="tops">
+              <span>Tops & Knits</span>
+            </label>
+            <label class="filter-label">
+              <input type="checkbox" name="type" value="bottoms">
+              <span>Bottoms</span>
+            </label>
+            <label class="filter-label">
+              <input type="checkbox" name="type" value="shoes">
+              <span>Shoes</span>
+            </label>
+            <label class="filter-label">
+              <input type="checkbox" name="type" value="accessories">
+              <span>Accessories</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Price Range Slider -->
+        <div class="filter-block">
+          <h3 class="filter-title">Max Price</h3>
+          <div class="price-slider-container">
+            <input type="range" id="price-range" min="0" max="350" value="350">
+            <div class="price-values">
+              <span>$0</span>
+              <strong id="price-slider-val" style="color: var(--accent-gold);">$350</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Reset Button -->
+        <button class="btn btn-secondary" id="btn-clear-filters" style="width: 100%; margin-top: 10px;">Clear All
+          Filters</button>
+
+      </aside>
+
+      <!-- Main Shop Content Grid -->
+      <section class="catalog-content">
+
+        <!-- Results count bar and Sorting dropdown -->
+        <div class="catalog-toolbar">
+          <div class="catalog-count" id="catalog-count-text">Showing 0 products</div>
+          <div class="catalog-sort">
+            <label for="sort-dropdown" style="font-size: 13px; color: var(--text-muted);">Sort by</label>
+            <select id="sort-dropdown">
+              <option value="featured">Featured Favorites</option>
+              <option value="price-low">Price: Low to High</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="rating">Top Rated</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Catalog Products Grid -->
+        <div class="products-grid" id="catalog-grid">
+          <!-- Dynamically Injected Cards -->
+        </div>
+
+        <!-- Empty Filter Results State -->
+        <div class="empty-state" id="catalog-empty-state" style="display: none;">
+          <i class="fas fa-search-minus"></i>
+          <h2>No Staples Found</h2>
+          <p>We couldn't find any products matching your specific selection. Try clearing filters or refining your price
+            search range.</p>
+          <button class="btn btn-primary" id="btn-empty-clear">Reset Filters</button>
+        </div>
+
+      </section>
+
+    </div>
+  </main>
+
+  <script type="module">
+    import { fetchProducts, addToCart, setupQuickViewTriggers } from './app.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const grid = document.getElementById('catalog-grid');
+      const countText = document.getElementById('catalog-count-text');
+      const emptyState = document.getElementById('catalog-empty-state');
+      const sortSelect = document.getElementById('sort-dropdown');
+      const priceSlider = document.getElementById('price-range');
+      const priceSliderVal = document.getElementById('price-slider-val');
+      const pageTitle = document.getElementById('page-display-title');
+      const clearBtn = document.getElementById('btn-clear-filters');
+      const emptyClearBtn = document.getElementById('btn-empty-clear');
+
+      // Fetch products dynamically from server
+      const products = await fetchProducts();
+
+      // 1. READ URL PARAMETERS
+      const urlParams = new URLSearchParams(window.location.search);
+      const querySearch = urlParams.get('q') || '';
+      const urlCategory = urlParams.get('category') || '';
+
+      // Set global search input val if queried
+      const searchBox = document.getElementById('global-search');
+      if (searchBox && querySearch) {
+        searchBox.value = querySearch;
+      }
+
+      // Check category from URL
+      if (urlCategory) {
+        const catCheckbox = document.querySelector(`input[name="category"][value="${urlCategory}"]`);
+        if (catCheckbox) catCheckbox.checked = true;
+        pageTitle.textContent = `${urlCategory.charAt(0).toUpperCase() + urlCategory.slice(1)} Collection`;
+      } else if (querySearch) {
+        pageTitle.textContent = `Search: "${querySearch}"`;
+      }
+
+      // 2. MAIN FILTER FUNCTION
+      function filterAndRenderProducts() {
+        // Collect checked categories
+        const checkedCategories = Array.from(document.querySelectorAll('input[name="category"]:checked')).map(cb => cb.value);
+        // Collect checked apparel types
+        const checkedTypes = Array.from(document.querySelectorAll('input[name="type"]:checked')).map(cb => cb.value);
+        // Collect max price limit
+        const maxPrice = Number(priceSlider.value);
+        // Sync text slider representation
+        priceSliderVal.textContent = `$${maxPrice}`;
+
+        // Perform filtering logic
+        let filtered = products.filter(product => {
+          // Category match
+          if (checkedCategories.length > 0 && !checkedCategories.includes(product.category)) {
+            return false;
+          }
+          // Type match
+          if (checkedTypes.length > 0 && !checkedTypes.includes(product.type)) {
+            return false;
+          }
+          // Price match
+          if (product.price > maxPrice) {
+            return false;
+          }
+          // Search string query match
+          if (querySearch) {
+            const query = querySearch.toLowerCase();
+            const matchesName = product.name.toLowerCase().includes(query);
+            const matchesDesc = product.description.toLowerCase().includes(query);
+            const matchesCat = product.category.toLowerCase().includes(query);
+            const matchesType = product.type.toLowerCase().includes(query);
+            if (!matchesName && !matchesDesc && !matchesCat && !matchesType) {
+              return false;
+            }
+          }
+          return true;
+        });
+
+        // Apply Sorting logic
+        const sortValue = sortSelect.value;
+        if (sortValue === 'price-low') {
+          filtered.sort((a, b) => a.price - b.price);
+        } else if (sortValue === 'price-high') {
+          filtered.sort((a, b) => b.price - a.price);
+        } else if (sortValue === 'rating') {
+          filtered.sort((a, b) => b.rating - a.rating);
+        } else {
+          // Default sorting 'featured' - featured first, then rating
+          filtered.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0));
+        }
+
+        // Render counts text
+        countText.textContent = `Showing ${filtered.length} of ${products.length} products`;
+
+        // Render card grids
+        if (filtered.length === 0) {
+          grid.style.display = 'none';
+          emptyState.style.display = 'block';
+        } else {
+          grid.style.display = 'grid';
+          emptyState.style.display = 'none';
+
+          grid.innerHTML = filtered.map(product => {
+            let starsHtml = '';
+            for (let i = 1; i <= 5; i++) {
+              if (i <= Math.floor(product.rating)) {
+                starsHtml += '<i class="fas fa-star"></i>';
+              } else if (i - 0.5 <= product.rating) {
+                starsHtml += '<i class="fas fa-star-half-alt"></i>';
+              } else {
+                starsHtml += '<i class="far fa-star"></i>';
+              }
+            }
+
+            return `
+              <div class="product-card" id="prod-${product.id}">
+                <div class="product-img-container">
+                  <a href="product-detail.html?id=${product.id}">
+                    <img class="product-img" src="${product.images[0]}" alt="${product.name}">
+                    <img class="product-img secondary" src="${product.images[1] || product.images[0]}" alt="${product.name} alternate">
+                  </a>
+                  ${product.featured ? '<div class="product-badge">Featured</div>' : ''}
+                  <div class="product-actions">
+                    <button class="product-action-btn" data-action="quick-add" data-id="${product.id}">
+                      <i class="fas fa-shopping-bag"></i> Add
+                    </button>
+                    <button class="product-action-btn icon-only" data-action="quick-view" data-product-id="${product.id}">
+                      <i class="fas fa-expand"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="product-info">
+                  <div class="product-cat">${product.category}</div>
+                  <h3 class="product-name">
+                    <a href="product-detail.html?id=${product.id}">${product.name}</a>
+                  </h3>
+                  <div class="product-rating">
+                    <div class="stars">${starsHtml}</div>
+                    <span>(${product.reviewsCount})</span>
+                  </div>
+                  <div class="product-price">$${product.price}</div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          // Re-bind actions
+          grid.querySelectorAll('[data-action="quick-add"]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.preventDefault();
+              const pid = Number(btn.dataset.id);
+              const p = products.find(prod => prod.id === pid);
+              if (p) {
+                addToCart(p.id, p.sizes[0], p.colors[0], 1);
+              }
+            });
+          });
+
+          // Bind quick view
+          setupQuickViewTriggers();
+        }
+      }
+
+      // 3. ATTACH LISTENERS
+      document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+        checkbox.addEventListener('change', filterAndRenderProducts);
+      });
+
+      priceSlider.addEventListener('input', filterAndRenderProducts);
+      sortSelect.addEventListener('change', filterAndRenderProducts);
+
+      // Reset filters logic
+      const resetAllFilters = () => {
+        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+        priceSlider.value = 350;
+        sortSelect.value = 'featured';
+        // Clear global search input
+        const searchInput = document.getElementById('global-search');
+        if (searchInput) searchInput.value = '';
+
+        // Remove URL queries cleanly without page reload
+        window.history.replaceState({}, document.title, window.location.pathname);
+        pageTitle.textContent = 'All Collections';
+
+        // Re-execute filter list
+        filterAndRenderProducts();
+      };
+
+      clearBtn.addEventListener('click', resetAllFilters);
+      emptyClearBtn.addEventListener('click', resetAllFilters);
+
+      // Perform initial render
+      filterAndRenderProducts();
+    });
+  </script>
+  <script type="module" src="./app.js"></script>
+</body>
+
+</html>

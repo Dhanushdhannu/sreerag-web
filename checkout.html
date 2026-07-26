@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noolmade. | Premium Checkout</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Catalog Header spacer -->
+  <div class="catalog-header" style="padding-top: 100px; padding-bottom: 20px;">
+    <div class="container">
+      <h1 class="section-title">Secure Checkout</h1>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="checkout-layout">
+
+      <!-- Left side checkout inputs -->
+      <form class="checkout-form-container" id="checkout-main-form">
+
+        <!-- Step 1: Shipping Address -->
+        <div class="form-section">
+          <h2 class="form-section-title"><span>1</span> Shipping Details</h2>
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="ship-first-name">First Name</label>
+              <input type="text" id="ship-first-name" required placeholder="E.g. Jane">
+            </div>
+            <div class="form-group">
+              <label for="ship-last-name">Last Name</label>
+              <input type="text" id="ship-last-name" required placeholder="E.g. Doe">
+            </div>
+            <div class="form-group full-width">
+              <label for="ship-address">Street Address</label>
+              <input type="text" id="ship-address" required placeholder="Apartment, suite, unit, or house number">
+            </div>
+            <div class="form-group">
+              <label for="ship-city">City</label>
+              <input type="text" id="ship-city" required placeholder="City">
+            </div>
+            <div class="form-group">
+              <label for="ship-zip">ZIP / Postal Code</label>
+              <input type="text" id="ship-zip" required placeholder="10001">
+            </div>
+            <div class="form-group full-width">
+              <label for="ship-country">Country / Region</label>
+              <select id="ship-country" required>
+                <option value="" disabled selected>Select location</option>
+                <option value="US">United States</option>
+                <option value="UK">United Kingdom</option>
+                <option value="EU">Europe</option>
+                <option value="IN">India</option>
+                <option value="CA">Canada</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 2: Payment Details -->
+        <div class="form-section">
+          <h2 class="form-section-title"><span>2</span> Payment Information</h2>
+
+          <!-- Card Widget Visualizer -->
+          <div class="card-widget-wrapper">
+            <div class="card-widget" id="visual-card">
+              <!-- Front Side -->
+              <div class="card-side front">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                  <div class="card-chip"></div>
+                  <div class="card-logo">Noolmade</div>
+                </div>
+                <div class="card-number" id="card-num-display">•••• •••• •••• ••••</div>
+                <div class="card-holder-exp">
+                  <div>
+                    <div class="card-label">Card Holder</div>
+                    <div class="card-val" id="card-holder-display">Full Name</div>
+                  </div>
+                  <div>
+                    <div class="card-label">Expires</div>
+                    <div class="card-val" id="card-expiry-display">MM/YY</div>
+                  </div>
+                </div>
+              </div>
+              <!-- Back Side -->
+              <div class="card-side back">
+                <div class="card-magnetic-strip"></div>
+                <div class="card-signature-cvv">
+                  <div class="card-cvv-stripe" id="card-cvv-display">•••</div>
+                </div>
+                <div
+                  style="padding:0 24px; margin-top:20px; font-size:10px; color:var(--text-muted); text-align:center;">
+                  Security signature strip. Do not share.
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card inputs -->
+          <div class="form-grid">
+            <div class="form-group full-width">
+              <label for="pay-card-name">Cardholder Name</label>
+              <input type="text" id="pay-card-name" required placeholder="Name on card" autocomplete="cc-name">
+            </div>
+            <div class="form-group full-width">
+              <label for="pay-card-num">Card Number</label>
+              <input type="text" id="pay-card-num" required placeholder="0000 0000 0000 0000" maxlength="19"
+                autocomplete="cc-number">
+            </div>
+            <div class="form-group">
+              <label for="pay-card-exp">Expiry Date</label>
+              <input type="text" id="pay-card-exp" required placeholder="MM/YY" maxlength="5" autocomplete="cc-exp">
+            </div>
+            <div class="form-group">
+              <label for="pay-card-cvv">CVV</label>
+              <input type="text" id="pay-card-cvv" required placeholder="123" maxlength="4" autocomplete="cc-csc">
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width:100%; height:50px;">Complete Purchase &
+          Order</button>
+      </form>
+
+      <!-- Right side checkout invoice sidebar summary -->
+      <aside>
+        <div class="summary-panel" style="position: sticky; top: 100px;">
+          <h2 class="summary-title" style="margin-bottom:16px;">Invoice Summary</h2>
+
+          <div id="checkout-summary-lines">
+            <!-- Dynamically populated from cart session values -->
+          </div>
+
+          <div class="summary-row total"
+            style="border-top:1px solid var(--border-color); padding-top:16px; margin-top:16px;">
+            <span>Total to pay</span>
+            <span id="checkout-total-price"
+              style="color:var(--accent-gold); font-size:22px; font-weight:700;">$0.00</span>
+          </div>
+
+          <div style="font-size: 11px; color: var(--text-muted); text-align: center; margin-top: 20px;">
+            <i class="fas fa-lock" style="color:var(--accent-gold); margin-right:4px;"></i> SSL Encrypted & Certified
+            Gateway Connection.
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <script type="module">
+    import { getCart, clearCart } from './app.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // 1. POPULATE SUMMARIES FROM SESSION STORAGE
+      const subtotal = sessionStorage.getItem('Noolmade_subtotal') || '0.00';
+      const shipping = sessionStorage.getItem('Noolmade_shipping') || '0.00';
+      const tax = sessionStorage.getItem('Noolmade_tax') || '0.00';
+      const discount = sessionStorage.getItem('Noolmade_discount') || '0.00';
+      const finalTotal = sessionStorage.getItem('Noolmade_final_total') || '0.00';
+
+      const summaryContainer = document.getElementById('checkout-summary-lines');
+      const totalDisplay = document.getElementById('checkout-total-price');
+
+      totalDisplay.textContent = `$${finalTotal}`;
+      summaryContainer.innerHTML = `
+        <div class="summary-row">
+          <span>Cart Subtotal</span>
+          <span>$${subtotal}</span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping fee</span>
+          <span>${Number(shipping) === 0 ? 'FREE' : `$${shipping}`}</span>
+        </div>
+        <div class="summary-row">
+          <span>Calculated Tax</span>
+          <span>$${tax}</span>
+        </div>
+        ${Number(discount) > 0 ? `
+          <div class="summary-row" style="color: var(--success);">
+            <span>Discount Applied</span>
+            <span>-$${discount}</span>
+          </div>
+        ` : ''}
+      `;
+
+      // 2. CREDIT CARD BINDINGS
+      const cardWidget = document.getElementById('visual-card');
+      const cardNumDisp = document.getElementById('card-num-display');
+      const cardHolderDisp = document.getElementById('card-holder-display');
+      const cardExpiryDisp = document.getElementById('card-expiry-display');
+      const cardCvvDisp = document.getElementById('card-cvv-display');
+
+      const payCardName = document.getElementById('pay-card-name');
+      const payCardNum = document.getElementById('pay-card-num');
+      const payCardExp = document.getElementById('pay-card-exp');
+      const payCardCvv = document.getElementById('pay-card-cvv');
+
+      // Sync name
+      payCardName.addEventListener('input', (e) => {
+        const val = e.target.value;
+        cardHolderDisp.textContent = val.trim() ? val.toUpperCase() : 'FULL NAME';
+      });
+
+      // Sync card number + auto-space
+      payCardNum.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\s+/g, '').replace(/[^0-9]/gi, '');
+        let formatted = '';
+        for (let i = 0; i < val.length; i++) {
+          if (i > 0 && i % 4 === 0) {
+            formatted += ' ';
+          }
+          formatted += val[i];
+        }
+        e.target.value = formatted;
+        cardNumDisp.textContent = formatted || '•••• •••• •••• ••••';
+      });
+
+      // Sync expiry + slash formatter
+      payCardExp.addEventListener('input', (e) => {
+        let val = e.target.value.replace(/\D/g, '');
+        if (val.length > 2) {
+          val = val.substring(0, 2) + '/' + val.substring(2, 4);
+        }
+        e.target.value = val;
+        cardExpiryDisp.textContent = val || 'MM/YY';
+      });
+
+      // Sync CVV
+      payCardCvv.addEventListener('input', (e) => {
+        const val = e.target.value.replace(/\D/g, '');
+        e.target.value = val;
+        cardCvvDisp.textContent = val || '•••';
+      });
+
+      // Flip card on CVV focus
+      payCardCvv.addEventListener('focus', () => {
+        cardWidget.classList.add('flipped');
+      });
+      payCardCvv.addEventListener('blur', () => {
+        cardWidget.classList.remove('flipped');
+      });
+
+      // 3. COMPLETE CHECKOUT DISPATCHER
+      const mainForm = document.getElementById('checkout-main-form');
+      mainForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        // Capture cart items before clear
+        const cartItems = getCart();
+
+        // Build Payload
+        const payload = {
+          shipping: {
+            firstName: document.getElementById('ship-first-name').value,
+            lastName: document.getElementById('ship-last-name').value,
+            address: document.getElementById('ship-address').value,
+            city: document.getElementById('ship-city').value,
+            zipCode: document.getElementById('ship-zip').value,
+            country: document.getElementById('ship-country').value
+          },
+          payment: {
+            cardholderName: payCardName.value,
+            cardNumber: payCardNum.value,
+            expiryDate: payCardExp.value,
+            cvv: payCardCvv.value
+          },
+          cart: cartItems.map(item => ({
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity
+          })),
+          summary: {
+            finalTotal: finalTotal
+          }
+        };
+
+        try {
+          const res = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (!res.ok) {
+            const errData = await res.json();
+            throw new Error(errData.error || 'Checkout transaction failed.');
+          }
+
+          const order = await res.json();
+
+          // Save order data for receipt representation in success page
+          sessionStorage.setItem('Noolmade_last_order', JSON.stringify(order));
+
+          // Wipe Cart
+          clearCart();
+
+          // Redirect
+          window.location.href = 'order-success.html';
+        } catch (err) {
+          alert('Checkout Error: ' + err.message);
+        }
+      });
+    });
+  </script>
+  <script type="module" src="./app.js"></script>
+</body>
+
+</html>

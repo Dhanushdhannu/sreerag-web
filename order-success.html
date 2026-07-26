@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noolmade. | Order Confirmed</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+
+<body>
+
+  <main class="container">
+    <div class="success-card">
+      <div class="success-icon">
+        <i class="fas fa-check"></i>
+      </div>
+
+      <h1 class="success-title">Order Confirmed</h1>
+      <p class="success-text">Thank you for your order. We are preparing your garment collection for shipment. A
+        tracking confirmation has been sent to your email.</p>
+
+      <!-- Invoice receipt details box -->
+      <div class="invoice-box" id="invoice-details-box">
+        <!-- Injected dynamically by javascript -->
+        <div style="text-align: center; padding: 20px 0;">
+          <i class="fas fa-spinner fa-spin" style="color:var(--accent-gold); margin-bottom:10px;"></i>
+          <span>Retrieving receipt details...</span>
+        </div>
+      </div>
+
+      <a href="products.html" class="btn btn-primary" style="width: 100%; max-width: 250px;">Continue Shopping</a>
+    </div>
+  </main>
+
+  <script type="module">
+    document.addEventListener('DOMContentLoaded', () => {
+      const invoiceBox = document.getElementById('invoice-details-box');
+
+      // Load last order details
+      const lastOrderStr = sessionStorage.getItem('Noolmade_last_order');
+      if (!lastOrderStr) {
+        invoiceBox.innerHTML = `
+          <div style="text-align:center; color: var(--text-muted);">
+            No invoice records found in current session.
+          </div>
+        `;
+        return;
+      }
+
+      const order = JSON.parse(lastOrderStr);
+
+      // Build items html list
+      const itemsHtml = order.items.map(item => `
+        <div class="invoice-item">
+          <span class="invoice-item-name">${item.name} <strong style="color:var(--text-muted);">x${item.quantity}</strong></span>
+          <span>$${(item.price * item.quantity).toFixed(2)}</span>
+        </div>
+      `).join('');
+
+      invoiceBox.innerHTML = `
+        <div class="invoice-header">
+          <div>Order <span class="invoice-id">${order.orderId}</span></div>
+          <div class="invoice-date">${order.date}</div>
+        </div>
+        <div style="margin-bottom:16px;">
+          <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:600; margin-bottom:4px;">Delivery Address</div>
+          <div style="font-size:13px; color:var(--text-secondary); line-height:1.4;">
+            <strong>${order.shippingName}</strong><br>
+            ${order.shippingAddress}
+          </div>
+        </div>
+        <div style="border-top: 1px solid var(--border-color); padding-top:16px;">
+          <div style="font-size:11px; color:var(--text-muted); text-transform:uppercase; font-weight:600; margin-bottom:10px;">Items Summary</div>
+          ${itemsHtml}
+        </div>
+        <div class="invoice-total">
+          <span>Total Charged</span>
+          <span>$${order.finalTotal}</span>
+        </div>
+      `;
+
+      // Trigger Confetti Celebration!
+      try {
+        const duration = 3 * 1000;
+        const animationEnd = Date.now() + duration;
+        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 1000 };
+
+        function randomInRange(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        const interval = setInterval(function () {
+          const timeLeft = animationEnd - Date.now();
+
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+
+          const particleCount = 50 * (timeLeft / duration);
+          // since particles fall down, start a bit higher than random
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+          confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+        }, 250);
+      } catch (err) {
+        console.error('Confetti animation failed to trigger:', err);
+      }
+    });
+  </script>
+  <script type="module" src="./app.js"></script>
+</body>
+
+</html>

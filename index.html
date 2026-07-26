@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noolmade. | Modern Luxury Apparel & Accessories</title>
+  <meta name="description"
+    content="Explore Noolmade Modern Apparel. Minimalist designs, premium cashmere outerwear, silk slip dresses, and handcrafted leather goods.">
+  <link rel="stylesheet" href="./styles.css">
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Main Content Wrapper -->
+  <main>
+
+    <!-- Hero Banner Section -->
+    <section class="hero">
+      <div class="container">
+        <div class="hero-content">
+          <span class="hero-tag">Noolmade Autumn/Winter '26</span>
+          <h1 class="hero-title">
+            Redefining <span>Contemporary Luxury</span>
+          </h1>
+          <p class="hero-description">
+            Thoughtfully designed essentials crafted from organic Italian cashmere, raw Japanese selvedge denim, and
+            Spanish full-grain calfskin.
+          </p>
+          <div class="hero-actions">
+            <a href="products.html" class="btn btn-primary">Shop Collection</a>
+            <a href="products.html?category=men" class="btn btn-secondary">Explore Men</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Categories Grid Section -->
+    <section class="section container">
+      <div class="section-title">Shop by Category</div>
+      <div class="section-subtitle">Curated categories structured around raw luxury and premium minimalism.</div>
+
+      <div class="categories-grid">
+        <!-- Category 1 -->
+        <div class="category-card" onclick="window.location.href='products.html?category=men'">
+          <div class="category-img"
+            style="background-image: url('https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=600&auto=format&fit=crop&q=80');">
+          </div>
+          <div class="category-overlay">
+            <h3 class="category-title">Men</h3>
+            <span class="category-link">Shop Collection <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+        <!-- Category 2 -->
+        <div class="category-card" onclick="window.location.href='products.html?category=women'">
+          <div class="category-img"
+            style="background-image: url('https://images.unsplash.com/photo-1485968579580-b6d095142e6e?w=600&auto=format&fit=crop&q=80');">
+          </div>
+          <div class="category-overlay">
+            <h3 class="category-title">Women</h3>
+            <span class="category-link">Shop Collection <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+        <!-- Category 3 -->
+        <div class="category-card" onclick="window.location.href='products.html?category=accessories'">
+          <div class="category-img"
+            style="background-image: url('https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=600&auto=format&fit=crop&q=80');">
+          </div>
+          <div class="category-overlay">
+            <h3 class="category-title">Accessories</h3>
+            <span class="category-link">Shop Collection <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Products Section -->
+    <section class="section container" style="border-top: 1px solid var(--border-color);">
+      <div class="section-title">New Arrivals</div>
+      <div class="section-subtitle">The latest editorial garments, designed to enrich your capsule wardrobe.</div>
+
+      <div class="products-grid" id="featured-products-container">
+        <!-- Rendered dynamically by javascript -->
+      </div>
+    </section>
+
+    <!-- Promotional Highlight Banner -->
+    <section class="container section" style="padding-top: 0;">
+      <div class="promo-banner">
+        <div>
+          <span class="promo-tag">Limited Offer</span>
+          <h2 class="promo-title">Seasonal Refresh</h2>
+          <p class="promo-text">Use the code below at checkout to receive 20% off all knitwear and premium coats. Enjoy
+            free worldwide express shipping on orders over $150.</p>
+        </div>
+        <div class="promo-code">
+          <div class="promo-code-title">Your Access Code</div>
+          <div class="promo-code-val">Noolmade20</div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Load Global App Modules -->
+  <script type="module">
+    import { fetchProducts, addToCart, setupQuickViewTriggers } from './app.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const container = document.getElementById('featured-products-container');
+
+      const products = await fetchProducts();
+      // Filter featured products, take first 4
+      const featured = products.filter(p => p.featured).slice(0, 4);
+
+      container.innerHTML = featured.map(product => {
+        // Calculate stars
+        let starsHtml = '';
+        for (let i = 1; i <= 5; i++) {
+          if (i <= Math.floor(product.rating)) {
+            starsHtml += '<i class="fas fa-star"></i>';
+          } else if (i - 0.5 <= product.rating) {
+            starsHtml += '<i class="fas fa-star-half-alt"></i>';
+          } else {
+            starsHtml += '<i class="far fa-star"></i>';
+          }
+        }
+
+        return `
+          <div class="product-card" id="prod-${product.id}">
+            <div class="product-img-container">
+              <a href="product-detail.html?id=${product.id}">
+                <img class="product-img" src="${product.images[0]}" alt="${product.name}">
+                <img class="product-img secondary" src="${product.images[1] || product.images[0]}" alt="${product.name} alternate">
+              </a>
+              <div class="product-badge">New</div>
+              <div class="product-actions">
+                <button class="product-action-btn" data-action="quick-add" data-id="${product.id}">
+                  <i class="fas fa-shopping-bag"></i> Add
+                </button>
+                <button class="product-action-btn icon-only" data-action="quick-view" data-product-id="${product.id}">
+                  <i class="fas fa-expand"></i>
+                </button>
+              </div>
+            </div>
+            <div class="product-info">
+              <div class="product-cat">${product.category}</div>
+              <h3 class="product-name">
+                <a href="product-detail.html?id=${product.id}">${product.name}</a>
+              </h3>
+              <div class="product-rating">
+                <div class="stars">${starsHtml}</div>
+                <span>(${product.reviewsCount})</span>
+              </div>
+              <div class="product-price">$${product.price}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Setup dynamic listeners for quick add
+      container.querySelectorAll('[data-action="quick-add"]').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          const pid = Number(btn.dataset.id);
+          const p = products.find(prod => prod.id === pid);
+          if (p) {
+            // Default size and color to first option
+            const defSize = p.sizes[0];
+            const defColor = p.colors[0];
+            addToCart(p.id, defSize, defColor, 1);
+          }
+        });
+      });
+
+      // Bind quick view triggers
+      setupQuickViewTriggers();
+    });
+  </script>
+  <script type="module" src="./app.js"></script>
+</body>
+
+</html>

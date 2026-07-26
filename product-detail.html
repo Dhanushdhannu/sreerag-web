@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noolmade. | Premium Detail View</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <main class="container">
+    <!-- Main product details template injected here -->
+    <div class="detail-layout" id="product-detail-container">
+      <!-- Loading Skeleton Loader -->
+      <div style="grid-column: span 2; text-align: center; padding: 100px 0;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: var(--accent-gold); margin-bottom: 20px;"></i>
+        <h2>Loading garment details...</h2>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { fetchProductById, addToCart } from './app.js';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      const container = document.getElementById('product-detail-container');
+
+      // 1. GET PRODUCT ID FROM URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const productId = Number(urlParams.get('id'));
+
+      const product = await fetchProductById(productId);
+
+      // Redirect if invalid product
+      if (!product) {
+        container.innerHTML = `
+          <div class="empty-state" style="grid-column: span 2;">
+            <i class="fas fa-exclamation-triangle" style="color: var(--error);"></i>
+            <h2>Garment Not Found</h2>
+            <p>We couldn't locate the specified item in our inventory. It may have sold out.</p>
+            <a href="products.html" class="btn btn-primary">Return to Catalog</a>
+          </div>
+        `;
+        return;
+      }
+
+      // Update Document Title Dynamically
+      document.title = `${product.name} | Noolmade.`;
+
+      // 2. RENDER THE DETAILED TEMPLATE
+      let starsHtml = '';
+      for (let i = 1; i <= 5; i++) {
+        if (i <= Math.floor(product.rating)) {
+          starsHtml += '<i class="fas fa-star"></i>';
+        } else if (i - 0.5 <= product.rating) {
+          starsHtml += '<i class="fas fa-star-half-alt"></i>';
+        } else {
+          starsHtml += '<i class="far fa-star"></i>';
+        }
+      }
+
+      container.innerHTML = `
+        <!-- Left Side Image Gallery -->
+        <div class="detail-gallery">
+          <div class="detail-main-img">
+            <img id="main-gallery-img" src="${product.images[0]}" alt="${product.name}">
+          </div>
+          <div class="detail-thumbnails">
+            ${product.images.map((img, idx) => `
+              <div class="thumb-img ${idx === 0 ? 'active' : ''}" data-index="${idx}">
+                <img src="${img}" alt="${product.name} view ${idx + 1}">
+              </div>
+            `).join('')}
+          </div>
+        </div>
+
+        <!-- Right Side Info Summary -->
+        <div class="detail-info">
+          <div class="product-cat">${product.category} &nbsp;/&nbsp; ${product.type}</div>
+          <h1 class="detail-title">${product.name}</h1>
+          
+          <div class="detail-meta">
+            <div class="stars">${starsHtml}</div>
+            <span>(${product.reviewsCount} verified reviews)</span>
+          </div>
+
+          <div class="detail-price">$${product.price}</div>
+          <p class="detail-description">${product.description}</p>
+
+          <!-- Attributes and Selections -->
+          <div class="detail-selectors">
+            
+            <!-- Color Selector -->
+            <div>
+              <div class="selector-title">Selected Color: <span id="selected-color-label" style="color: var(--text-primary); text-transform: none; font-weight: 500;">${product.colors[0].name}</span></div>
+              <div class="color-swatch-grid">
+                ${product.colors.map((color, idx) => `
+                  <button class="color-swatch-btn ${idx === 0 ? 'selected' : ''}" 
+                          data-name="${color.name}" 
+                          data-hex="${color.hex}" 
+                          style="background-color: ${color.hex}">
+                  </button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Size Selector -->
+            <div>
+              <div class="selector-title">Select Size</div>
+              <div class="size-grid">
+                ${product.sizes.map((size, idx) => `
+                  <button class="size-btn ${idx === 0 ? 'selected' : ''}" data-size="${size}">${size}</button>
+                `).join('')}
+              </div>
+            </div>
+
+            <!-- Quantity selector -->
+            <div>
+              <div class="selector-title">Quantity</div>
+              <div class="qty-picker">
+                <button class="qty-btn" id="qty-minus"><i class="fas fa-minus"></i></button>
+                <input type="number" class="qty-input" id="qty-count" value="1" min="1" readonly>
+                <button class="qty-btn" id="qty-plus"><i class="fas fa-plus"></i></button>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Add to Bag Trigger -->
+          <div class="detail-actions">
+            <button class="btn btn-primary" id="btn-add-to-cart">Add to Shopping Bag</button>
+            <button class="btn btn-secondary"><i class="far fa-heart"></i> Add to Wishlist</button>
+          </div>
+
+          <!-- Tabs Navigation Component -->
+          <div class="tabs-nav">
+            <div class="tab-link active" data-tab="specs">Specifications</div>
+            <div class="tab-link" data-tab="shipping">Shipping & Returns</div>
+            <div class="tab-link" data-tab="reviews">Reviews (${product.reviewsCount})</div>
+          </div>
+
+          <!-- Tab Content Panels -->
+          <!-- Tab 1: Specs -->
+          <div class="tab-content active" id="tab-specs">
+            <ul class="specs-list">
+              ${product.details.map(detail => `
+                <li style="grid-column: span 2; display: flex; align-items: center; gap: 8px;">
+                  <i class="fas fa-circle" style="font-size: 6px; color: var(--accent-gold);"></i>
+                  <span>${detail}</span>
+                </li>
+              `).join('')}
+              <li style="margin-top: 10px;">
+                <span class="specs-label">Designer Brand</span>
+                <span>Noolmade Studio</span>
+              </li>
+              <li style="margin-top: 10px;">
+                <span class="specs-label">Origin Location</span>
+                <span>Crafted in Europe</span>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Tab 2: Shipping -->
+          <div class="tab-content" id="tab-shipping">
+            <p style="margin-bottom: 12px;">Enjoy complimentary worldwide express courier shipping on orders exceeding $150. Delivery cycles typically complete within 3–5 business days.</p>
+            <p>Return policy: If you are not fully content with your purchase, we accept return dispatches in original packaging with original tags within 30 days of invoice receipt.</p>
+          </div>
+
+          <!-- Tab 3: Reviews -->
+          <div class="tab-content" id="tab-reviews">
+            <div class="reviews-summary">
+              <div class="reviews-score">
+                <div class="reviews-big-num">${product.rating}</div>
+                <div class="stars" style="justify-content: center; margin: 4px 0 8px;">${starsHtml}</div>
+                <span style="font-size: 12px; color: var(--text-muted);">Based on verified buyers</span>
+              </div>
+              <div style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center; gap: 6px; font-size: 13px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="width: 40px;">5 Star</span>
+                  <div style="flex-grow: 1; height: 6px; background-color: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
+                    <div style="width: 82%; height: 100%; background-color: var(--accent-gold);"></div>
+                  </div>
+                  <span style="width: 30px; text-align: right;">82%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="width: 40px;">4 Star</span>
+                  <div style="flex-grow: 1; height: 6px; background-color: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
+                    <div style="width: 14%; height: 100%; background-color: var(--accent-gold);"></div>
+                  </div>
+                  <span style="width: 30px; text-align: right;">14%</span>
+                </div>
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <span style="width: 40px;">3 Star</span>
+                  <div style="flex-grow: 1; height: 6px; background-color: var(--bg-tertiary); border-radius: 3px; overflow: hidden;">
+                    <div style="width: 4%; height: 100%; background-color: var(--accent-gold);"></div>
+                  </div>
+                  <span style="width: 30px; text-align: right;">4%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- List of Reviews -->
+            <div class="review-item">
+              <div class="review-header">
+                <span class="review-author">Marcus K.</span>
+                <span class="review-date">July 2026</span>
+              </div>
+              <div class="stars" style="margin-bottom: 8px;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+              <p class="review-text">Absolutely incredible finish. The fabric feels extremely premium, thick, and looks fantastic tailored. Exceeded all my high expectations.</p>
+            </div>
+            <div class="review-item">
+              <div class="review-header">
+                <span class="review-author">Sophia L.</span>
+                <span class="review-date">June 2026</span>
+              </div>
+              <div class="stars" style="margin-bottom: 8px;"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="far fa-star"></i></div>
+              <p class="review-text">The sizing was exactly spot on. High-quality craftsmanship and fits perfectly. Will definitely be purchasing other colors soon.</p>
+            </div>
+          </div>
+
+        </div>
+      `;
+
+      // 3. INTERACTIVE BINDINGS
+      // Swapping image thumbnails
+      const thumbs = container.querySelectorAll('.thumb-img');
+      const mainImg = container.getElementById('main-gallery-img');
+      thumbs.forEach(thumb => {
+        thumb.addEventListener('click', () => {
+          thumbs.forEach(t => t.classList.remove('active'));
+          thumb.classList.add('active');
+          mainImg.src = product.images[Number(thumb.dataset.index)];
+        });
+      });
+
+      // Color swatches selector
+      const swatches = container.querySelectorAll('.color-swatch-btn');
+      const selectedColorLabel = container.getElementById('selected-color-label');
+      let selectedColorObj = product.colors[0];
+
+      swatches.forEach((swatch, idx) => {
+        swatch.addEventListener('click', () => {
+          swatches.forEach(s => s.classList.remove('selected'));
+          swatch.classList.add('selected');
+          selectedColorObj = product.colors[idx];
+          selectedColorLabel.textContent = selectedColorObj.name;
+        });
+      });
+
+      // Size option buttons
+      const sizeBtns = container.querySelectorAll('.size-btn');
+      let selectedSizeStr = product.sizes[0];
+
+      sizeBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          sizeBtns.forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          selectedSizeStr = btn.dataset.size;
+        });
+      });
+
+      // Quantity controls
+      const qtyCount = container.getElementById('qty-count');
+      const qtyMinus = container.getElementById('qty-minus');
+      const qtyPlus = container.getElementById('qty-plus');
+
+      qtyMinus.addEventListener('click', () => {
+        const val = Number(qtyCount.value);
+        if (val > 1) qtyCount.value = val - 1;
+      });
+      qtyPlus.addEventListener('click', () => {
+        const val = Number(qtyCount.value);
+        qtyCount.value = val + 1;
+      });
+
+      // Tabs switcher system
+      const tabLinks = container.querySelectorAll('.tab-link');
+      const tabContents = container.querySelectorAll('.tab-content');
+
+      tabLinks.forEach(link => {
+        link.addEventListener('click', () => {
+          tabLinks.forEach(l => l.classList.remove('active'));
+          tabContents.forEach(c => c.classList.remove('active'));
+
+          link.classList.add('active');
+          const targetTab = container.querySelector(`#tab-${link.dataset.tab}`);
+          if (targetTab) targetTab.classList.add('active');
+        });
+      });
+
+      // Add to Cart Dispatcher
+      const addCartBtn = container.getElementById('btn-add-to-cart');
+      addCartBtn.addEventListener('click', () => {
+        const quantity = Number(qtyCount.value);
+        addToCart(product.id, selectedSizeStr, selectedColorObj, quantity);
+      });
+
+    });
+  </script>
+  <script type="module" src="./app.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noolmade. | Shopping Bag</title>
+  <link rel="stylesheet" href="./styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+
+  <!-- Catalog Header spacer -->
+  <div class="catalog-header" style="padding-top: 100px; padding-bottom: 20px;">
+    <div class="container">
+      <h1 class="section-title">Your Bag</h1>
+    </div>
+  </div>
+
+  <main class="container">
+    <div class="cart-layout" id="cart-page-content">
+      <!-- Injected by Javascript based on active cart size -->
+      <div style="grid-column: span 2; text-align: center; padding: 100px 0;">
+        <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: var(--accent-gold); margin-bottom: 20px;"></i>
+        <h2>Accessing your shopping bag...</h2>
+      </div>
+    </div>
+  </main>
+
+  <script type="module">
+    import { getCart, removeFromCart, updateCartQuantity, getCartSubtotal, saveCart } from './app.js';
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const layoutContainer = document.getElementById('cart-page-content');
+
+      // Promo Codes Mappings
+      const promoCodes = {
+        'Noolmade20': 0.20,
+        'WELCOME10': 0.10,
+        'SPRING15': 0.15
+      };
+
+      // Load active coupon from session
+      let activeCoupon = sessionStorage.getItem('Noolmade_coupon') || '';
+      let discountPercent = activeCoupon ? (promoCodes[activeCoupon] || 0) : 0;
+
+      // 1. RENDER FUNCTION
+      function renderCartPage() {
+        const cart = getCart();
+
+        if (cart.length === 0) {
+          layoutContainer.innerHTML = `
+            <div class="empty-state" style="grid-column: span 2;">
+              <i class="fas fa-shopping-bag"></i>
+              <h2>Your bag is empty</h2>
+              <p>You have not added any garments to your capsule bag yet.</p>
+              <a href="products.html" class="btn btn-primary">Browse Collections</a>
+            </div>
+          `;
+          return;
+        }
+
+        // Calculate checkout math
+        const subtotal = getCartSubtotal();
+        const shipping = subtotal >= 150 ? 0 : 15;
+        const discountAmount = subtotal * discountPercent;
+        const taxRate = 0.08;
+        const tax = (subtotal - discountAmount) * taxRate;
+        const finalTotal = subtotal + shipping - discountAmount + tax;
+
+        // Save checkout values to session storage for checkout.html
+        sessionStorage.setItem('Noolmade_subtotal', subtotal.toFixed(2));
+        sessionStorage.setItem('Noolmade_shipping', shipping.toFixed(2));
+        sessionStorage.setItem('Noolmade_discount', discountAmount.toFixed(2));
+        sessionStorage.setItem('Noolmade_tax', tax.toFixed(2));
+        sessionStorage.setItem('Noolmade_final_total', finalTotal.toFixed(2));
+
+        // Build items table body
+        let tableRowsHtml = cart.map((item, idx) => `
+          <tr data-index="${idx}">
+            <td>
+              <div class="cart-item-info">
+                <div class="cart-item-img">
+                  <img src="${item.image}" alt="${item.name}">
+                </div>
+                <div class="cart-item-details">
+                  <h3 class="cart-item-name"><a href="product-detail.html?id=${item.productId}">${item.name}</a></h3>
+                  <div class="cart-item-meta">
+                    Size: ${item.size} &nbsp;|&nbsp; 
+                    Color: <span style="display:inline-block; width:10px; height:10px; border-radius:50%; background-color:${item.color.hex}; margin-bottom:-1px;"></span> ${item.color.name}
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <div class="cart-item-price">$${item.price}</div>
+            </td>
+            <td>
+              <div class="qty-picker">
+                <button class="qty-btn btn-qty-minus" data-index="${idx}"><i class="fas fa-minus"></i></button>
+                <input type="number" class="qty-input input-qty-val" data-index="${idx}" value="${item.quantity}" min="1" readonly style="width: 40px; height: 32px;">
+                <button class="qty-btn btn-qty-plus" data-index="${idx}"><i class="fas fa-plus"></i></button>
+              </div>
+            </td>
+            <td>
+              <div class="cart-item-price" style="font-weight:600; color: var(--accent-gold);">$${(item.price * item.quantity).toFixed(2)}</div>
+            </td>
+            <td style="text-align:right;">
+              <button class="icon-btn btn-remove" data-index="${idx}"><i class="fas fa-trash-alt"></i></button>
+            </td>
+          </tr>
+        `).join('');
+
+        layoutContainer.innerHTML = `
+          <!-- Left side Table list of products -->
+          <div class="cart-table-container">
+            <table class="cart-table">
+              <thead>
+                <tr>
+                  <th>Garment Detail</th>
+                  <th>Price</th>
+                  <th>Quantity</th>
+                  <th>Subtotal</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                ${tableRowsHtml}
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Right side Order Summary Panel -->
+          <div class="summary-panel">
+            <h2 class="summary-title">Order Summary</h2>
+            
+            <div class="summary-row">
+              <span>Bag Subtotal</span>
+              <span>$${subtotal.toFixed(2)}</span>
+            </div>
+            
+            <div class="summary-row">
+              <span>Estimated Shipping</span>
+              <span>${shipping === 0 ? '<strong style="color:var(--success)">FREE</strong>' : `$${shipping.toFixed(2)}`}</span>
+            </div>
+
+            <div class="summary-row">
+              <span>Estimated Sales Tax (8%)</span>
+              <span>$${tax.toFixed(2)}</span>
+            </div>
+
+            ${discountAmount > 0 ? `
+              <div class="summary-row" style="color: var(--success);">
+                <span>Discount (${activeCoupon})</span>
+                <span>-$${discountAmount.toFixed(2)}</span>
+              </div>
+            ` : ''}
+
+            <!-- Promotional Code Form -->
+            <form class="promo-form" id="coupon-apply-form">
+              <input type="text" id="coupon-input" placeholder="Promo code (e.g. Noolmade20)" value="${activeCoupon}">
+              <button type="submit" class="btn btn-secondary">Apply</button>
+            </form>
+            <div class="promo-message" id="coupon-message"></div>
+
+            <div class="summary-row total">
+              <span>Total Price</span>
+              <span>$${finalTotal.toFixed(2)}</span>
+            </div>
+
+            <a href="checkout.html" class="btn btn-primary checkout-btn">Proceed to Checkout</a>
+            <a href="products.html" class="btn btn-secondary checkout-btn" style="text-align:center;">Continue Shopping</a>
+          </div>
+        `;
+
+        // 2. ATTACH INNER EVENT LISTENERS
+        // Remove item buttons
+        layoutContainer.querySelectorAll('.btn-remove').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = Number(btn.dataset.index);
+            removeFromCart(idx);
+            renderCartPage();
+          });
+        });
+
+        // Quantity Plus / Minus controls
+        layoutContainer.querySelectorAll('.btn-qty-minus').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = Number(btn.dataset.index);
+            const input = layoutContainer.querySelector(`.input-qty-val[data-index="${idx}"]`);
+            const val = Number(input.value);
+            if (val > 1) {
+              updateCartQuantity(idx, val - 1);
+              renderCartPage();
+            }
+          });
+        });
+
+        layoutContainer.querySelectorAll('.btn-qty-plus').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const idx = Number(btn.dataset.index);
+            const input = layoutContainer.querySelector(`.input-qty-val[data-index="${idx}"]`);
+            const val = Number(input.value);
+            updateCartQuantity(idx, val + 1);
+            renderCartPage();
+          });
+        });
+
+        // Coupon application form listener
+        const couponForm = layoutContainer.querySelector('#coupon-apply-form');
+        const couponInput = layoutContainer.querySelector('#coupon-input');
+        const couponMsg = layoutContainer.querySelector('#coupon-message');
+
+        couponForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const code = couponInput.value.trim().toUpperCase();
+
+          if (!code) {
+            sessionStorage.removeItem('Noolmade_coupon');
+            activeCoupon = '';
+            discountPercent = 0;
+            renderCartPage();
+            return;
+          }
+
+          if (promoCodes.hasOwnProperty(code)) {
+            sessionStorage.setItem('Noolmade_coupon', code);
+            activeCoupon = code;
+            discountPercent = promoCodes[code];
+            renderCartPage();
+
+            // Re-grab message tag since HTML was re-written
+            const newMsg = document.getElementById('coupon-message');
+            newMsg.textContent = `Promo code ${code} (${discountPercent * 100}% off) applied!`;
+            newMsg.className = 'promo-message success';
+          } else {
+            couponMsg.textContent = 'Invalid promo code. Try Noolmade20';
+            couponMsg.className = 'promo-message error';
+          }
+        });
+      }
+
+      // Initial Cart Page Render
+      renderCartPage();
+
+      // Listen to header cart modifications to keep page values in sync
+      window.addEventListener('cartUpdated', renderCartPage);
+    });
+  </script>
+  <script type="module" src="./app.js"></script>
+</body>
+
+</html>
